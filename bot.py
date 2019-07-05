@@ -28,22 +28,24 @@ time_virtualizacao = [lauro]
 
 def check_variavel(update, context):
     try:
+        user_id = update._effective_user.id
         first_name = update._effective_user.first_name
         username = update._effective_user.username
         chat_id = update.message.chat.id
         text = update.message.text
         is_bot = update._effective_user.is_bot
     except:
+        user_id = update._effective_user.id
         first_name = update._effective_user.first_name
         username = update._effective_user.username        
         chat_id = update.callback_query.message.chat.id
         text = update.callback_query.message.text
         is_bot = update._effective_user.is_bot
 
-    return first_name,username,chat_id,text,is_bot  
+    return user_id,first_name,username,chat_id,text,is_bot  
 
 def frase_aleatoria(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)    
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)    
     arquivo = "arquivos/frases.yaml"
     d1 = yaml_loader(arquivo)
     d2 = json.dumps(d1)
@@ -53,19 +55,27 @@ def frase_aleatoria(update, context):
     return frase
 
 def valida_usuario(update, context, id_usuario):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+
+    if user_id not in usuarios_autorizados:
+        if chat_id < 0:
+            context.bot.kick_chat_member(chat_id, user_id)
+            context.bot.sendMessage(chat_id=user_id, text='Você não deveria entrar nesse grupo :)')
+            update.message.reply_text('Ele não deveria estar nesse grupo, ele não foi autorizado')
+
     if id_usuario in usuarios_autorizados:
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: usuário autenticado MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
         return 0    
     else:
         resposta = frase_aleatoria(update, context)
         update.message.reply_text(resposta)
-        update.message.reply_text('Da para mim não minha genialidade não é para meros mortais')
-        context.bot.leave_chat(chat_id)		
-        return 1
+        if chat_id < 0:
+            update.message.reply_text('Da para mim não minha genialidade não é para meros mortais')
+            context.bot.leave_chat(chat_id)
+    return 1
 
 def start(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, update.message.chat.id)
     if validacao == 0:
         botao01 = InlineKeyboardButton("start debug", callback_data='start_debug_1')
@@ -87,7 +97,7 @@ def start(update, context):
 
 def voltar(update, context):
     query=update.callback_query
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         botao01 = InlineKeyboardButton("start debug", callback_data='start_debug_1')
@@ -108,7 +118,7 @@ def voltar(update, context):
 
 def start_debug_1(update, context):
     query=update.callback_query
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
 
     botao01 = InlineKeyboardButton("hostname", callback_data='hostname')
@@ -125,7 +135,7 @@ def start_debug_1(update, context):
 
 def start_debug_2(update, context):
     query=update.callback_query
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
 
     botao01 = InlineKeyboardButton("versao", callback_data='versao')
@@ -191,7 +201,7 @@ def get_url():
     return url
     
 def frases(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         arquivo = "arquivos/frases.yaml"
@@ -203,7 +213,7 @@ def frases(update, context):
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando frases MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def frases_amor(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         arquivo = "arquivos/frases_amor.yaml"
@@ -216,7 +226,7 @@ def frases_amor(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando frases_amor MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def frases_inteligentes(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         arquivo = "arquivos/frases_inteligentes.yaml"
@@ -229,7 +239,7 @@ def frases_inteligentes(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando frases_inteligentes MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def frases_dev(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         arquivo = "arquivos/dev.yaml"
@@ -242,7 +252,7 @@ def frases_dev(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando frases_dev MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def lero_lero(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         arquivo = "arquivos/lero.yaml"
@@ -255,14 +265,14 @@ def lero_lero(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando frases_dev MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def help(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         update.message.reply_text("Use /start para que eu mostre os menus.")
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: help MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def bop(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         url = get_url()
@@ -270,7 +280,7 @@ def bop(update, context):
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: comando bop MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def echo(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         MsgRecebida = update.message.text.lower()
@@ -419,7 +429,7 @@ def echo(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: echo mensagem MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def teste(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     if validacao == 0:
         if chat_id in administradores:
@@ -431,7 +441,7 @@ def teste(update, context):
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: teste MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
 
 def teste_diretorio(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: teste_diretorio MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
     if validacao == 0:
@@ -444,7 +454,7 @@ def teste_diretorio(update, context):
             context.bot.sendMessage(chat_id=chat_id, text="oi? o que queres?")
 
 def versao(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: versao MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
     if validacao == 0:
@@ -456,7 +466,7 @@ def versao(update, context):
         context.bot.sendMessage(chat_id=chat_id, text="*Sou o BOT de HOMOLOGAÇÃO* na versao "+ versao_bot, parse_mode=telegram.ParseMode.MARKDOWN)
 
 def liga(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: liga MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
     if validacao == 0:    
@@ -467,7 +477,7 @@ def liga(update, context):
             context.bot.sendMessage(chat_id=chat_id, text="Esse comando so pode executar e Rafael, desculpe")
 
 def ping(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: ping MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
     if validacao == 0:   
@@ -480,7 +490,7 @@ def ping(update, context):
             context.bot.sendMessage(chat_id=chat_id, text="Esse comando so quem pode executar e Rafael, desculpe")
 
 def hostname(update, context):
-    first_name,username,chat_id,text,is_bot = check_variavel(update, context)
+    user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
     validacao = valida_usuario(update, context, chat_id)
     logger.info("USER: {} USERNAME: {} ID: {} TYPE: hostname MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
     if validacao == 0:
