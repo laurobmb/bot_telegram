@@ -60,6 +60,8 @@ def valida_usuario(update, context, id_usuario):
     else:
         resposta = frase_aleatoria(update, context)
         update.message.reply_text(resposta)
+        update.message.reply_text('Da para mim não minha genialidade não é para meros mortais')
+        context.bot.leave_chat(chat_id)		
         return 1
 
 def start(update, context):
