@@ -57,14 +57,19 @@ def frase_aleatoria(update, context):
 def valida_usuario(update, context, id_usuario):
     user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
 
-    for i in context.bot.get_chat_administrators(chat_id):
-        id_admin=i['user']['id']
-        nome_admin=i['user']['first_name']
-        username_admin=i['user']['username']
-        bot_admin=i['user']['is_bot']
-        status_admin=i['status']
-        logger.info("USER: {} USERNAME: {} ID: {} TYPE: administradores STATUS: {} BOT: {}".format(nome_admin,username_admin,id_admin,status_admin,bot_admin))
-
+    try:
+        admins = context.bot.get_chat_administrators(chat_id)
+        for i in admins:
+            id_admin=i['user']['id']
+            nome_admin=i['user']['first_name']
+            username_admin=i['user']['username']
+            bot_admin=i['user']['is_bot']
+            status_admin=i['status']
+            logger.info("USER: {} USERNAME: {} ID: {} TYPE: administradores STATUS: {} BOT: {}".format(nome_admin,username_admin,id_admin,status_admin,bot_admin))
+            continue
+    except:
+        admins = 0
+    
     if user_id not in usuarios_autorizados:
         if chat_id < 0:
             try:
