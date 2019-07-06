@@ -57,11 +57,22 @@ def frase_aleatoria(update, context):
 def valida_usuario(update, context, id_usuario):
     user_id,first_name,username,chat_id,text,is_bot = check_variavel(update, context)
 
+    for i in context.bot.get_chat_administrators(chat_id):
+        id_admin=i['user']['id']
+        nome_admin=i['user']['first_name']
+        username_admin=i['user']['username']
+        bot_admin=i['user']['is_bot']
+        status_admin=i['status']
+        logger.info("USER: {} USERNAME: {} ID: {} TYPE: administradores STATUS: {} BOT: {}".format(nome_admin,username_admin,id_admin,status_admin,bot_admin))
+
     if user_id not in usuarios_autorizados:
         if chat_id < 0:
-            context.bot.kick_chat_member(chat_id, user_id)
-            context.bot.sendMessage(chat_id=user_id, text='Você não deveria entrar nesse grupo :)')
-            update.message.reply_text('Ele não deveria estar nesse grupo, ele não foi autorizado')
+            try:
+                context.bot.kick_chat_member(chat_id, user_id)
+                context.bot.sendMessage(chat_id=user_id, text='Você não deveria entrar nesse grupo :)')
+                update.message.reply_text('Ele não deveria estar nesse grupo, ele não foi autorizado')
+            except:
+                context.bot.sendMessage(chat_id=chat_id, text='Não sou admin do grupo, estou triste com isso')
 
     if id_usuario in usuarios_autorizados:
         logger.info("USER: {} USERNAME: {} ID: {} TYPE: usuário autenticado MESSAGE: {} BOT: {}".format(first_name,username,chat_id,text,is_bot))
@@ -70,7 +81,7 @@ def valida_usuario(update, context, id_usuario):
         resposta = frase_aleatoria(update, context)
         update.message.reply_text(resposta)
         if chat_id < 0:
-            update.message.reply_text('Da para mim não minha genialidade não é para meros mortais')
+            update.message.reply_text('Sou lindo demais para estar nesse grupo')
             context.bot.leave_chat(chat_id)
     return 1
 
