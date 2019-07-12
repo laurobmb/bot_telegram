@@ -1,4 +1,4 @@
-Oráculo BOT Telegram com ELK
+Oráculo BOT Telegram com DOCKER
 =========================
 
 ### Este BOT possui comandos especificos para algumas tarefas, algoritmos de inteligência artificial [Machine Learn] que usa linguagem natural [NLTK] para responder aos administradores ou usuários autorizados previamente. 
@@ -9,7 +9,8 @@ Oráculo BOT Telegram com ELK
 
 	-> Python3 https://www.python.org/
 	-> Chatterbot https://chatterbot.readthedocs.io/en/stable/
-	-> NLTK https://www.nltk.org/  
+	-> NLTK https://www.nltk.org/
+	-> DOCKER https://www.docker.com/  
 
 OBS: Antes de executar o projeto siga todos os passos abaixo, observando o ambiente que esta executando o DOCKER
 
