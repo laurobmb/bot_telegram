@@ -1,9 +1,9 @@
 Oráculo BOT Telegram com DOCKER
 =========================
 
-### Este BOT possui comandos especificos para algumas tarefas, algoritmos de inteligência artificial [Machine Learn] que usa linguagem natural [NLTK] para responder aos administradores ou usuários autorizados previamente. 
+### Este BOT possui comandos especificos para algumas tarefas, algoritmos de inteligência artificial [Machine learning] que usa linguagem natural [NLTK] para responder aos administradores ou usuários autorizados previamente. 
 
-### This BOT has specific commands for some tasks, artificial intelligence algorithms [Machine Learn] that uses natural language [NLTK] to respond to administrators or previously authorized users. 
+### This BOT has specific commands for some tasks, artificial intelligence algorithms [Machine learning] that uses natural language [NLTK] to respond to administrators or previously authorized users. 
 
 #### Está em uso na ferramenta os seguintes aplicações:
 
