@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler,MessageHandler,Filters
 import telegram
 import requests, re, random, yaml, json, os, subprocess
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
+import logging
 
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 estado='HML'
@@ -524,7 +523,7 @@ def chatterbot_msg(MSG):
 	return output
 
 def main():
-		TOKEN='XXXXXXXXXXXXXX'
+		TOKEN='816982332:AAFaKxwHbVvaeIsUOA5noYi9Gw6QvDTkz8U'
 		updater = Updater(TOKEN, use_context=True)
 		updater.dispatcher.add_handler(CommandHandler('start', start))
 #### Comandos COMUNS
